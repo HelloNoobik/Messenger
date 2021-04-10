@@ -26,5 +26,6 @@ namespace Server.Data
         }
     
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<RestoreRequest> RestoreRequests { get; set; }
     }
 }

@@ -12,13 +12,13 @@ namespace Server.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class RestoreRequest
     {
         public int Id { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
+        public int UserId { get; set; }
+        public System.DateTime DateTime { get; set; }
+        public int VerifyCode { get; set; }
     
-        public virtual RestoreRequest RestoreRequest { get; set; }
+        public virtual User User { get; set; }
     }
 }
