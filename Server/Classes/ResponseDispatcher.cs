@@ -5,8 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using SharedLibrary;
+using Server;
 
-namespace Server
+namespace Server.Classes
 {
     public class ResponseDispatcher
     {
@@ -15,21 +16,25 @@ namespace Server
         public ResponseDispatcher()
         {
             requests = new Dictionary<string, Func<Pocket, Pocket>>();
+            Load();
         }
-
         public void Add(Func<Pocket, Pocket> method)
         {
             string path = GetPath(method.Method);
             if (path != "") requests.Add(path, method);
         }
-
         public void Remove(string path)
         {
             Func<Pocket, Pocket> method;
             requests.TryGetValue(path, out method);
             if (method != null) requests.Remove(path);
         }
-
+        public void Load() 
+        {
+            Add(Program.Auth);
+            Add(Program.Register);
+            Add(Program.RestoreAccess);
+        }
         public Pocket Execute(string path, Pocket pocket)
         {
             Func<Pocket, Pocket> method;
@@ -37,7 +42,6 @@ namespace Server
             if (method != null) return method(pocket);
             else return null;
         }
-
         private string GetPath(MethodInfo method)
         {
             RouteAttribute route = method.GetCustomAttribute<RouteAttribute>();

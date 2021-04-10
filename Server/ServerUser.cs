@@ -17,7 +17,6 @@ namespace Server
         {
             channel = new Channel(socket);
         }
-
         public Channel GetChannel() => channel;
         public void Send(Pocket pocket) => channel.Send(pocket);
         public Pocket Recieve() => channel.Recieve();
