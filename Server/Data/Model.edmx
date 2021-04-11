@@ -5,14 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Хранилище MessTestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="RestoreRequests">
+        <EntityType Name="Sessions">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="DateTime" Type="datetime" Nullable="false" />
-          <Property Name="VerifyCode" Type="int" Nullable="false" />
+          <Property Name="Signature" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -23,24 +22,24 @@
           <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <Association Name="FK_RestoreRequests_Users">
+        <Association Name="FK_Sessions_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="RestoreRequests" Type="Self.RestoreRequests" Multiplicity="0..1" />
+          <End Role="Sessions" Type="Self.Sessions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="RestoreRequests">
-              <PropertyRef Name="Id" />
+            <Dependent Role="Sessions">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Хранилище MessTestModelContainer">
-          <EntitySet Name="RestoreRequests" EntityType="Self.RestoreRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_RestoreRequests_Users" Association="Self.FK_RestoreRequests_Users">
+          <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
             <End Role="Users" EntitySet="Users" />
-            <End Role="RestoreRequests" EntitySet="RestoreRequests" />
+            <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -49,10 +48,10 @@
       <Schema Namespace="MessTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="MessTestEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Users" EntityType="MessTestModel.User" />
-          <EntitySet Name="RestoreRequests" EntityType="MessTestModel.RestoreRequest" />
-          <AssociationSet Name="FK_RestoreRequests_Users" Association="MessTestModel.FK_RestoreRequests_Users">
+          <EntitySet Name="Sessions" EntityType="MessTestModel.Session" />
+          <AssociationSet Name="FK_Sessions_Users" Association="MessTestModel.FK_Sessions_Users">
             <End Role="User" EntitySet="Users" />
-            <End Role="RestoreRequest" EntitySet="RestoreRequests" />
+            <End Role="Session" EntitySet="Sessions" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="User">
@@ -63,27 +62,26 @@
           <Property Name="Login" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="RestoreRequest" Relationship="MessTestModel.FK_RestoreRequests_Users" FromRole="User" ToRole="RestoreRequest" />
+          <NavigationProperty Name="Sessions" Relationship="MessTestModel.FK_Sessions_Users" FromRole="User" ToRole="Session" />
         </EntityType>
-        <EntityType Name="RestoreRequest">
+        <EntityType Name="Session">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="VerifyCode" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="MessTestModel.FK_RestoreRequests_Users" FromRole="RestoreRequest" ToRole="User" />
+          <Property Name="Signature" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="MessTestModel.FK_Sessions_Users" FromRole="Session" ToRole="User" />
         </EntityType>
-        <Association Name="FK_RestoreRequests_Users">
+        <Association Name="FK_Sessions_Users">
           <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
-          <End Type="MessTestModel.RestoreRequest" Role="RestoreRequest" Multiplicity="0..1" />
+          <End Type="MessTestModel.Session" Role="Session" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="RestoreRequest">
-              <PropertyRef Name="Id" />
+            <Dependent Role="Session">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -103,11 +101,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="RestoreRequests">
-            <EntityTypeMapping TypeName="MessTestModel.RestoreRequest">
-              <MappingFragment StoreEntitySet="RestoreRequests">
-                <ScalarProperty Name="VerifyCode" ColumnName="VerifyCode" />
-                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+          <EntitySetMapping Name="Sessions">
+            <EntityTypeMapping TypeName="MessTestModel.Session">
+              <MappingFragment StoreEntitySet="Sessions">
+                <ScalarProperty Name="Signature" ColumnName="Signature" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

@@ -3,6 +3,9 @@ using SharedLibrary;
 using System.Net;
 using System.Net.Sockets;
 using System.Configuration;
+using System.IO;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Client
 {
@@ -18,10 +21,12 @@ namespace Client
             Console.WriteLine(pocket.Signature);
 
             dispatcher = new RequestDispatcher();
+            dispatcher.Add(Hello);
             dispatcher.Add(Auth);
             dispatcher.Add(Register);
             dispatcher.Add(RestoreAccess);
-
+            dispatcher.Add(Update);
+            dispatcher.Add(Test);
             endPoint = new IPEndPoint(IPAddress.Loopback, 1000);
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(endPoint);
@@ -37,6 +42,21 @@ namespace Client
                 }
                 catch (Exception ex) { Console.WriteLine(ex.Message); }
             }
+        }
+
+        [Route("Hello")]
+        static void Hello() 
+        {
+            Console.WriteLine("Запрос Приветствия");
+            Pocket pocket = new Pocket("Hello");
+            channel.Send(pocket);
+            Pocket response = channel.Recieve();
+
+            if ((bool)response.Message[0] == true)
+            {
+                Console.WriteLine($"Привет, {(string)response.Message[1]}");
+            }
+            else Console.WriteLine("Требуется авторизация");
         }
 
         [Route("Auth")]
@@ -98,6 +118,30 @@ namespace Client
 
                 }
             }
+        }
+        
+        [Route("Update")]
+        static void Update() 
+        {
+            string path = Environment.GetCommandLineArgs()[0];
+            string filename = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last();
+            Console.WriteLine("Запрос обновления");
+            string[] bat = new string[]
+            {
+                "@echo off",
+                $"taskkill /f /im Client.exe",
+                $"ren {path} old_Client.exe",
+                $"ren {Environment.CurrentDirectory}\\new_Client.exe {filename}",
+                $"del {Environment.CurrentDirectory}\\old_Client.exe",
+                $"del {Environment.CurrentDirectory}\\update.bat",
+            };
+
+            Pocket pocket = new Pocket("Update");
+            channel.Send(pocket);
+            Pocket response = channel.Recieve();
+            File.WriteAllBytes("new_Client.exe", response.Message[0] as byte[]);
+            File.WriteAllLines("update.bat", bat);
+            Process.Start("update.bat");
         }
     }
 }

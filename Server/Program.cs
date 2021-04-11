@@ -53,6 +53,8 @@ namespace Server
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
+                    user = new ServerUser(socket.Accept());
+                    Console.WriteLine("Новое подключение");
                 }
             }
         }

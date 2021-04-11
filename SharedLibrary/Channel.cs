@@ -8,9 +8,12 @@ namespace SharedLibrary
     {
         NetworkStream networkStream;
 
+        public string IP { private set; get; }
+
         public Channel(Socket socket) 
         {
             networkStream = new NetworkStream(socket, true);
+            IP = socket.RemoteEndPoint.ToString();
         }
 
         public void Send(Pocket pocket) 

@@ -31,9 +31,11 @@ namespace Server.Classes
         }
         public void Load() 
         {
+            Add(Program.Hello);
             Add(Program.Auth);
             Add(Program.Register);
             Add(Program.RestoreAccess);
+            Add(Program.Update);
         }
         public Pocket Execute(string path, Pocket pocket)
         {

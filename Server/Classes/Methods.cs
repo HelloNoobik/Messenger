@@ -1,11 +1,26 @@
 ﻿using System;
 using System.Linq;
+using System.IO;
 using SharedLibrary;
 
 namespace Server
 {
     partial class Program
     {
+        [Route("Hello")]
+        static public Pocket Hello(Pocket pocket) 
+        {
+            Pocket response = new Pocket();
+            string signature = pocket.Signature + $"/{(pocket.Message.Last() as Channel).IP.Split(':')[0]}";
+            Data.Session session = db.Sessions.SingleOrDefault(c => c.Signature == signature);
+            if (session != null)
+            {
+                response.Message.Add(true);
+                response.Message.Add(session.User.Login);
+            }
+            else response.Message.Add(false);
+            return response;
+        }
         [Route("Auth")]
         static public Pocket Auth(Pocket pocket)
         {
@@ -13,10 +28,29 @@ namespace Server
             string pass = pocket.Message[1] as string;
 
             Pocket response = new Pocket();
+            string signature = pocket.Signature + $"/{(pocket.Message.Last() as Channel).IP.Split(':')[0]}";
             Data.User User = db.Users.Where(c => c.Login == login && c.Password == pass).SingleOrDefault();
             if (User != null)
             {
                 user.User = User;
+
+                Data.Session session = db.Sessions.SingleOrDefault(c => c.Signature == signature);
+                if (session != null)
+                {
+                    session.UserId = User.Id;
+                    session.Signature = signature;
+                }
+                else 
+                {
+                    session = new Data.Session()
+                    {
+                        UserId = User.Id,
+                        Signature = signature,
+                    };
+                    db.Sessions.Add(session);
+                }
+                db.SaveChanges();
+
                 response.Message.Add(true);
             }
             else response.Message.Add(false);
@@ -30,6 +64,7 @@ namespace Server
             string email = pocket.Message[2] as string;
 
             Pocket response = new Pocket();
+            string signature = pocket.Signature + $"/{(pocket.Message.Last() as Channel).IP.Split(':')[0]}";
             if (db.Users.Where(c => c.Login == login && c.Password == pass).Count() == 0)
             {
                 Data.User User = new Data.User()
@@ -39,6 +74,23 @@ namespace Server
                     Email = email,
                 };
                 db.Users.Add(User);
+                db.SaveChanges();
+
+                Data.Session session = db.Sessions.SingleOrDefault(c => c.Signature == signature);
+                if (session != null)
+                {
+                    session.UserId = User.Id;
+                    session.Signature = signature;
+                }
+                else
+                {
+                    session = new Data.Session()
+                    {
+                        UserId = User.Id,
+                        Signature = signature,
+                    };
+                    db.Sessions.Add(session);
+                }
                 db.SaveChanges();
 
                 user.User = User;
@@ -88,6 +140,14 @@ namespace Server
                 }
             }
             response.Message.Add(false);
+            return response;
+        }
+        [Route("Update")]
+        static public Pocket Update(Pocket pocket) 
+        {
+            byte[] file = File.ReadAllBytes("C:\\Users\\User\\source\\repos\\Messenger\\Client\\bin\\Debug\\Client.exe");
+            Pocket response = new Pocket();
+            response.Message.Add(file);
             return response;
         }
     }
