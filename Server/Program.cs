@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Net.Mail;
 using SharedLibrary;
 using Server.Classes;
+using System.Security.Cryptography;
 
 namespace Server
 {
@@ -16,7 +17,7 @@ namespace Server
         static IPEndPoint endPoint;
         static Socket socket;
         static ResponseDispatcher dispatcher;
-        static Data.MessTestEntities db;
+        static Data.MessEntities db;
         static Email email;
         static ServerUser user;
         static void Main(string[] args)
@@ -24,39 +25,69 @@ namespace Server
             endPoint = new IPEndPoint(IPAddress.Any, 1000);
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             dispatcher = new ResponseDispatcher();
-            db = new Data.MessTestEntities();
+            db = new Data.MessEntities();
             email = new Email(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Email.txt");
 
             Console.WriteLine("Запущен обработчик команд");
             
             socket.Bind(endPoint);
             socket.Listen(128);
+            AcceptLoopAsync();
             Console.WriteLine("Запущен сервер\nОжидание подключений");
 
-            user = new ServerUser(socket.Accept());
-            Console.WriteLine("Новое подключение");
+            while (true) 
+            { 
+            
+            }
+        }
 
-            while (true)
+        static async void AcceptLoopAsync() 
+        {
+            await Task.Run(() => 
             {
-                try
+                while (true) 
                 {
-                    Pocket request = user.Recieve();
-                    Console.WriteLine("Поступил запрос: " + request.Action);
-                    request.Message.Add(user.GetChannel());
-                    Pocket response = dispatcher.Execute(request.Action, request);
-                    if (response != null)
-                    { 
-                        user.Send(response);
-                        Console.WriteLine("Ответ сформирован и отправлен");
+                    try
+                    {
+                        Socket client = socket.Accept();
+                        Console.WriteLine("Новое подключение");
+                        RecieveSendLoopAsync(new ServerUser(client));
+                    }
+                    catch (Exception ex) 
+                    {
+                        if(ex.InnerException is SocketException) Console.WriteLine("Соединение потеряно");
+                        else Console.WriteLine($"{ex}");
                     }
                 }
-                catch (Exception ex)
+            });
+        }
+
+        static async void RecieveSendLoopAsync(ServerUser client) 
+        {
+            await Task.Run(() => 
+            {
+                while (true)
                 {
-                    Console.WriteLine(ex.ToString());
-                    user = new ServerUser(socket.Accept());
-                    Console.WriteLine("Новое подключение");
-                }
-            }
+                    try
+                    {
+                        Pocket request = client.Recieve();
+                        Console.WriteLine("Поступил запрос: " + request.Action);
+                        request.Message.Add(client.GetChannel());
+                        Pocket response = dispatcher.Execute(request.Action,request);
+                        if (response != null)
+                        {
+                            client.Send(response);
+                            Console.WriteLine("Ответ сформирован и отправлен");
+                        }
+                    }
+                    catch (Exception ex) 
+                    {
+                        if (ex.InnerException is SocketException) Console.WriteLine("Соединение потеряно");
+                        else Console.WriteLine($"{ex}");
+                        break;
+                    }
+                }    
+            });
         }
     }
 }

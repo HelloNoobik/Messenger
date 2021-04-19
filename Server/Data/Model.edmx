@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище MessTestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище MessTestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Sessions">
           <Key>
             <PropertyRef Name="Id" />
@@ -42,71 +42,72 @@
             <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MessTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="MessTestEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Users" EntityType="MessTestModel.User" />
-          <EntitySet Name="Sessions" EntityType="MessTestModel.Session" />
-          <AssociationSet Name="FK_Sessions_Users" Association="MessTestModel.FK_Sessions_Users">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Session" EntitySet="Sessions" />
-          </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Login" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Sessions" Relationship="MessTestModel.FK_Sessions_Users" FromRole="User" ToRole="Session" />
-        </EntityType>
         <EntityType Name="Session">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="Signature" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="User" Relationship="MessTestModel.FK_Sessions_Users" FromRole="Session" ToRole="User" />
+          <Property Name="Signature" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Sessions_Users" FromRole="Sessions" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Sessions" Relationship="Self.FK_Sessions_Users" FromRole="Users" ToRole="Sessions" />
         </EntityType>
         <Association Name="FK_Sessions_Users">
-          <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
-          <End Type="MessTestModel.Session" Role="Session" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Sessions" Type="Self.Session" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Users">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Session">
+            <Dependent Role="Sessions">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="MessEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Sessions" EntityType="Self.Session" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Sessions" EntitySet="Sessions" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище MessTestModelContainer" CdmEntityContainer="MessTestEntities">
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="MessTestModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Login" ColumnName="Login" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
+        <EntityContainerMapping StorageEntityContainer="Хранилище MessTestModelContainer" CdmEntityContainer="MessEntities">
           <EntitySetMapping Name="Sessions">
             <EntityTypeMapping TypeName="MessTestModel.Session">
               <MappingFragment StoreEntitySet="Sessions">
-                <ScalarProperty Name="Signature" ColumnName="Signature" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Signature" ColumnName="Signature" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="MessTestModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

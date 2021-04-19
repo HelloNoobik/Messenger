@@ -13,10 +13,10 @@ namespace Server.Data
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MessTestEntities : DbContext
+    public partial class MessEntities : DbContext
     {
-        public MessTestEntities()
-            : base("name=MessTestEntities")
+        public MessEntities()
+            : base("name=MessEntities")
         {
         }
     
@@ -25,7 +25,7 @@ namespace Server.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

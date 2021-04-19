@@ -6,6 +6,7 @@ using System.Configuration;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Client
 {
@@ -17,6 +18,10 @@ namespace Client
         static Channel channel;
         static void Main(string[] args)
         {
+            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Update.exe"))) File.Delete("Update.exe");
+
+            Console.Title = "Client.exe";
+
             Pocket pocket = new Pocket("Auth");
             Console.WriteLine(pocket.Signature);
 
@@ -26,7 +31,6 @@ namespace Client
             dispatcher.Add(Register);
             dispatcher.Add(RestoreAccess);
             dispatcher.Add(Update);
-            dispatcher.Add(Test);
             endPoint = new IPEndPoint(IPAddress.Loopback, 1000);
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(endPoint);
@@ -123,25 +127,18 @@ namespace Client
         [Route("Update")]
         static void Update() 
         {
-            string path = Environment.GetCommandLineArgs()[0];
-            string filename = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last();
-            Console.WriteLine("Запрос обновления");
-            string[] bat = new string[]
-            {
-                "@echo off",
-                $"taskkill /f /im Client.exe",
-                $"ren {path} old_Client.exe",
-                $"ren {Environment.CurrentDirectory}\\new_Client.exe {filename}",
-                $"del {Environment.CurrentDirectory}\\old_Client.exe",
-                $"del {Environment.CurrentDirectory}\\update.bat",
-            };
+            //string path = Environment.GetCommandLineArgs()[0];
+            //string filename = path.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last();
+            //Console.WriteLine("Запрос обновления");
 
-            Pocket pocket = new Pocket("Update");
-            channel.Send(pocket);
-            Pocket response = channel.Recieve();
-            File.WriteAllBytes("new_Client.exe", response.Message[0] as byte[]);
-            File.WriteAllLines("update.bat", bat);
-            Process.Start("update.bat");
+
+
+            //Pocket pocket = new Pocket("Update");
+            //channel.Send(pocket);
+            //Pocket response = channel.Recieve();
+            //File.WriteAllBytes("new_Client.exe", response.Message[0] as byte[]);
+            //File.WriteAllLines("update.bat", bat);
+            //Process.Start("update.bat");
         }
     }
 }

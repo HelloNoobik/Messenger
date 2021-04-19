@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using SharedLibrary;
+using System.Text.RegularExpressions;
 
 namespace Server
 {
@@ -61,9 +62,19 @@ namespace Server
         {
             string login = pocket.Message[0] as string;
             string pass = pocket.Message[1] as string;
-            string email = pocket.Message[2] as string;
+            string email = (pocket.Message[2] as string).Trim().ToLowerInvariant();
 
             Pocket response = new Pocket();
+            if (!string.IsNullOrEmpty(email?.Trim()))
+            {
+                const string pattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
+                if (!Regex.Match(email, pattern).Success)
+                {
+                    response.Message.Add(false);
+                    return response;
+                }
+            }
+
             string signature = pocket.Signature + $"/{(pocket.Message.Last() as Channel).IP.Split(':')[0]}";
             if (db.Users.Where(c => c.Login == login && c.Password == pass).Count() == 0)
             {
