@@ -12,31 +12,21 @@ namespace Server.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Chat
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Chat()
         {
-            this.Sessions = new HashSet<Session>();
-            this.Blacklists = new HashSet<Blacklist>();
             this.ChatMembers = new HashSet<ChatMember>();
-            this.Chats = new HashSet<Chat>();
             this.Messages = new HashSet<Message>();
         }
     
-        public int Id { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
+        public int ChatId { get; set; }
+        public int UserId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Session> Sessions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Blacklist> Blacklists { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ChatMember> ChatMembers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Chat> Chats { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Message> Messages { get; set; }
     }

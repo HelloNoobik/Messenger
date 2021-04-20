@@ -7,8 +7,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
-namespace Client
+namespace DebugClient
 {
     class Program
     {
@@ -31,6 +32,7 @@ namespace Client
             dispatcher.Add(Register);
             dispatcher.Add(RestoreAccess);
             dispatcher.Add(Update);
+            dispatcher.Add(GetChats);
             endPoint = new IPEndPoint(IPAddress.Loopback, 1000);
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(endPoint);
@@ -123,7 +125,31 @@ namespace Client
                 }
             }
         }
-        
+
+        [Route("GetChats")]
+        static void GetChats() 
+        {
+            Console.WriteLine("Запрос чатов");
+            Pocket request = new Pocket("GetChats");
+            channel.Send(request);
+            Pocket response = channel.Recieve();
+
+            List<Chat> Chats = (List<Chat>)response.Message[0];
+
+            foreach (Chat chat in Chats) 
+            {
+                Console.WriteLine("ChatId: " + chat.ChatId);
+                Console.WriteLine("ChatOwner: " + chat.Creator);
+                Console.WriteLine("ChatMessagesCount: " + chat.Messages.Count);
+                Console.WriteLine();
+                foreach (Message message in chat.Messages) 
+                {
+                    Console.WriteLine($"[{message.Sended}] = {message.Sender}: {message.MessageText} --- {message.MessageId} , {message.SenderId}");
+                }
+            }
+        }
+
+
         [Route("Update")]
         static void Update() 
         {

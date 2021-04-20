@@ -8,6 +8,17 @@
         <EntityTypeShape EntityType="MessTestModel.Session" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="MessTestModel.User" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
         <AssociationConnector Association="MessTestModel.FK_Sessions_Users" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MessTestModel.Blacklist" Width="1.5" PointX="3" PointY="9.5" />
+        <EntityTypeShape EntityType="MessTestModel.ChatMember" Width="1.5" PointX="5.25" PointY="5.625" />
+        <EntityTypeShape EntityType="MessTestModel.Chat" Width="1.5" PointX="3" PointY="4.375" />
+        <EntityTypeShape EntityType="MessTestModel.Friend" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="MessTestModel.Message" Width="1.5" PointX="5.25" PointY="2.5" />
+        <AssociationConnector Association="MessTestModel.FK_Blacklist_Users" />
+        <AssociationConnector Association="MessTestModel.FK_ChatMembers_Chats" />
+        <AssociationConnector Association="MessTestModel.FK_ChatMembers_Users" />
+        <AssociationConnector Association="MessTestModel.FK_Chats_Users" />
+        <AssociationConnector Association="MessTestModel.FK_Messages_Chats" />
+        <AssociationConnector Association="MessTestModel.FK_Messages_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

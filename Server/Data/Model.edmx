@@ -4,7 +4,48 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище MessTestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище MessTestModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Blacklist">
+          <Key>
+            <PropertyRef Name="BlacklistEntryId" />
+          </Key>
+          <Property Name="BlacklistEntryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="BlockedUserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ChatMembers">
+          <Key>
+            <PropertyRef Name="ChatMemberId" />
+          </Key>
+          <Property Name="ChatMemberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChatId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Chats">
+          <Key>
+            <PropertyRef Name="ChatId" />
+          </Key>
+          <Property Name="ChatId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Friends">
+          <Key>
+            <PropertyRef Name="FriendEntryId" />
+          </Key>
+          <Property Name="FriendEntryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="FriendId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Messages">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="ChatId" Type="int" Nullable="false" />
+          <Property Name="SendedDateTime" Type="datetime" Nullable="false" />
+          <Property Name="MessageText" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
         <EntityType Name="Sessions">
           <Key>
             <PropertyRef Name="Id" />
@@ -22,6 +63,78 @@
           <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Blacklist_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Blacklist" Type="Self.Blacklist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Blacklist">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChatMembers_Chats">
+          <End Role="Chats" Type="Self.Chats" Multiplicity="1" />
+          <End Role="ChatMembers" Type="Self.ChatMembers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Chats">
+              <PropertyRef Name="ChatId" />
+            </Principal>
+            <Dependent Role="ChatMembers">
+              <PropertyRef Name="ChatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChatMembers_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ChatMembers" Type="Self.ChatMembers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatMembers">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chats_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Chats" Type="Self.Chats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Chats">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Chats">
+          <End Role="Chats" Type="Self.Chats" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Chats">
+              <PropertyRef Name="ChatId" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="ChatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Sessions_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Sessions" Type="Self.Sessions" Multiplicity="*" />
@@ -35,15 +148,43 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Хранилище MessTestModelContainer">
+          <EntitySet Name="Blacklist" EntityType="Self.Blacklist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChatMembers" EntityType="Self.ChatMembers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Chats" EntityType="Self.Chats" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Friends" EntityType="Self.Friends" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Blacklist_Users" Association="Self.FK_Blacklist_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Blacklist" EntitySet="Blacklist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChatMembers_Chats" Association="Self.FK_ChatMembers_Chats">
+            <End Role="Chats" EntitySet="Chats" />
+            <End Role="ChatMembers" EntitySet="ChatMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChatMembers_Users" Association="Self.FK_ChatMembers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ChatMembers" EntitySet="ChatMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chats_Users" Association="Self.FK_Chats_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Chats" EntitySet="Chats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Chats" Association="Self.FK_Messages_Chats">
+            <End Role="Chats" EntitySet="Chats" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users" Association="Self.FK_Messages_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
           <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MessTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -65,6 +206,10 @@
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Sessions" Relationship="Self.FK_Sessions_Users" FromRole="Users" ToRole="Sessions" />
+          <NavigationProperty Name="Blacklists" Relationship="MessTestModel.FK_Blacklist_Users" FromRole="User" ToRole="Blacklist" />
+          <NavigationProperty Name="ChatMembers" Relationship="MessTestModel.FK_ChatMembers_Users" FromRole="User" ToRole="ChatMember" />
+          <NavigationProperty Name="Chats" Relationship="MessTestModel.FK_Chats_Users" FromRole="User" ToRole="Chat" />
+          <NavigationProperty Name="Messages" Relationship="MessTestModel.FK_Messages_Users" FromRole="User" ToRole="Message" />
         </EntityType>
         <Association Name="FK_Sessions_Users">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
@@ -85,7 +230,157 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
+          <EntitySet Name="Blacklists" EntityType="MessTestModel.Blacklist" />
+          <EntitySet Name="ChatMembers" EntityType="MessTestModel.ChatMember" />
+          <EntitySet Name="Chats" EntityType="MessTestModel.Chat" />
+          <EntitySet Name="Friends" EntityType="MessTestModel.Friend" />
+          <EntitySet Name="Messages" EntityType="MessTestModel.Message" />
+          <AssociationSet Name="FK_Blacklist_Users" Association="MessTestModel.FK_Blacklist_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Blacklist" EntitySet="Blacklists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChatMembers_Chats" Association="MessTestModel.FK_ChatMembers_Chats">
+            <End Role="Chat" EntitySet="Chats" />
+            <End Role="ChatMember" EntitySet="ChatMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChatMembers_Users" Association="MessTestModel.FK_ChatMembers_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="ChatMember" EntitySet="ChatMembers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chats_Users" Association="MessTestModel.FK_Chats_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Chat" EntitySet="Chats" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Chats" Association="MessTestModel.FK_Messages_Chats">
+            <End Role="Chat" EntitySet="Chats" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users" Association="MessTestModel.FK_Messages_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Blacklist">
+          <Key>
+            <PropertyRef Name="BlacklistEntryId" />
+          </Key>
+          <Property Name="BlacklistEntryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="BlockedUserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="MessTestModel.FK_Blacklist_Users" FromRole="Blacklist" ToRole="User" />
+        </EntityType>
+        <EntityType Name="ChatMember">
+          <Key>
+            <PropertyRef Name="ChatMemberId" />
+          </Key>
+          <Property Name="ChatMemberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChatId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Chat" Relationship="MessTestModel.FK_ChatMembers_Chats" FromRole="ChatMember" ToRole="Chat" />
+          <NavigationProperty Name="User" Relationship="MessTestModel.FK_ChatMembers_Users" FromRole="ChatMember" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Chat">
+          <Key>
+            <PropertyRef Name="ChatId" />
+          </Key>
+          <Property Name="ChatId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ChatMembers" Relationship="MessTestModel.FK_ChatMembers_Chats" FromRole="Chat" ToRole="ChatMember" />
+          <NavigationProperty Name="User" Relationship="MessTestModel.FK_Chats_Users" FromRole="Chat" ToRole="User" />
+          <NavigationProperty Name="Messages" Relationship="MessTestModel.FK_Messages_Chats" FromRole="Chat" ToRole="Message" />
+        </EntityType>
+        <EntityType Name="Friend">
+          <Key>
+            <PropertyRef Name="FriendEntryId" />
+          </Key>
+          <Property Name="FriendEntryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="FriendId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageId" />
+          </Key>
+          <Property Name="MessageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ChatId" Type="Int32" Nullable="false" />
+          <Property Name="SendedDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MessageText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Chat" Relationship="MessTestModel.FK_Messages_Chats" FromRole="Message" ToRole="Chat" />
+          <NavigationProperty Name="User" Relationship="MessTestModel.FK_Messages_Users" FromRole="Message" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_Blacklist_Users">
+          <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
+          <End Type="MessTestModel.Blacklist" Role="Blacklist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Blacklist">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChatMembers_Chats">
+          <End Type="MessTestModel.Chat" Role="Chat" Multiplicity="1" />
+          <End Type="MessTestModel.ChatMember" Role="ChatMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Chat">
+              <PropertyRef Name="ChatId" />
+            </Principal>
+            <Dependent Role="ChatMember">
+              <PropertyRef Name="ChatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChatMembers_Users">
+          <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
+          <End Type="MessTestModel.ChatMember" Role="ChatMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatMember">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chats_Users">
+          <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
+          <End Type="MessTestModel.Chat" Role="Chat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Chat">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Chats">
+          <End Type="MessTestModel.Chat" Role="Chat" Multiplicity="1" />
+          <End Type="MessTestModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Chat">
+              <PropertyRef Name="ChatId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="ChatId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users">
+          <End Type="MessTestModel.User" Role="User" Multiplicity="1" />
+          <End Type="MessTestModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -108,6 +403,52 @@
                 <ScalarProperty Name="Login" ColumnName="Login" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Blacklists">
+            <EntityTypeMapping TypeName="MessTestModel.Blacklist">
+              <MappingFragment StoreEntitySet="Blacklist">
+                <ScalarProperty Name="BlockedUserId" ColumnName="BlockedUserId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="BlacklistEntryId" ColumnName="BlacklistEntryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChatMembers">
+            <EntityTypeMapping TypeName="MessTestModel.ChatMember">
+              <MappingFragment StoreEntitySet="ChatMembers">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ChatId" ColumnName="ChatId" />
+                <ScalarProperty Name="ChatMemberId" ColumnName="ChatMemberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Chats">
+            <EntityTypeMapping TypeName="MessTestModel.Chat">
+              <MappingFragment StoreEntitySet="Chats">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ChatId" ColumnName="ChatId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Friends">
+            <EntityTypeMapping TypeName="MessTestModel.Friend">
+              <MappingFragment StoreEntitySet="Friends">
+                <ScalarProperty Name="FriendId" ColumnName="FriendId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="FriendEntryId" ColumnName="FriendEntryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="MessTestModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="MessageText" ColumnName="MessageText" />
+                <ScalarProperty Name="SendedDateTime" ColumnName="SendedDateTime" />
+                <ScalarProperty Name="ChatId" ColumnName="ChatId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MessageId" ColumnName="MessageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

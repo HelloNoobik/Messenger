@@ -35,6 +35,7 @@ namespace Server.Classes
             Add(Program.Auth);
             Add(Program.Register);
             Add(Program.RestoreAccess);
+            Add(Program.GetChats);
             Add(Program.Update);
         }
         public Pocket Execute(string path, Pocket pocket)

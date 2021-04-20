@@ -17,7 +17,6 @@ namespace Server.Classes
 
         private SmtpClient  smtp;
         private MailAddress from;
-        private string password;
 
         public Email(string path) 
         {

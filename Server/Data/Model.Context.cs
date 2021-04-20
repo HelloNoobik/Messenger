@@ -27,5 +27,10 @@ namespace Server.Data
     
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Blacklist> Blacklists { get; set; }
+        public virtual DbSet<ChatMember> ChatMembers { get; set; }
+        public virtual DbSet<Chat> Chats { get; set; }
+        public virtual DbSet<Friend> Friends { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
     }
 }

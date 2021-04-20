@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using SharedLibrary;
 
-namespace Client
+namespace DebugClient
 {
     public class RequestDispatcher
     {
