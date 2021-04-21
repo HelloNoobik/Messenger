@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.UI.Windows
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RestoreWindow : Window
     {
-        public MainWindow()
+        public RestoreWindow()
         {
             InitializeComponent();
         }

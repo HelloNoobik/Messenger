@@ -13,32 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.UI.Windows
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegisterWindow : Window
     {
-        public MainWindow()
+        public RegisterWindow()
         {
             InitializeComponent();
         }
 
         private void picExit_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => Environment.Exit(0);
         private void gTopBar_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
-
-        private void btRestore_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            btRestore.IsEnabled = false;
-            tbLogin.IsEnabled = false;
-            tbCode.IsEnabled = false;
-
-            tbCode.Visibility = Visibility.Visible;
-            pbPass.Visibility = Visibility.Visible;
-            pbPassConfirm.Visibility = Visibility.Visible;
-
-            btRestore.IsEnabled = true;
-        }
     }
 }
