@@ -1,0 +1,25 @@
+﻿<Window x:Class="Client.UI.Windows.ChatsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:ui ="clr-namespace:Client.UI.UserControls"
+        xmlns:local="clr-namespace:Client.UI.Windows"
+        mc:Ignorable="d"
+        Title="ChatsWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
+    <Grid Background="Black">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="600*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="239*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TopBar Grid.ColumnSpan="2"></ui:TopBar>
+        <StackPanel x:Name="spDialogs" Orientation="Vertical" Grid.Column="0" Grid.Row="1"></StackPanel>
+        <Grid x:Name="gChat" Grid.Row="1" Grid.Column="1"></Grid>
+    </Grid>
+</Window>

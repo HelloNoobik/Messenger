@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Client.UI.UserControls.Dialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:ui ="clr-namespace:Client.UI.UserControls"
+             xmlns:local="clr-namespace:Client.UI.UserControls"
+             mc:Ignorable="d">
+    <Border x:Name="border" Background="Transparent" BorderBrush="White" BorderThickness="1" PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+        <Grid Background="Transparent">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="User" VerticalAlignment="Stretch"/>
+                <StackPanel Orientation="Vertical">
+                    <Label x:Name="ChatName" Foreground="White"/>
+                    <Label x:Name="LastMessage" Foreground="White"/>
+                </StackPanel>
+                <materialDesign:PackIcon Kind="Circle" VerticalAlignment="Stretch" Foreground="AliceBlue"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -22,10 +22,10 @@
             <TextBox x:Name="tbCode" Visibility="Hidden" materialDesign:HintAssist.Hint="Код с почты" Width="200" Background="White" Foreground="Black" Margin="0,0,0,10" Padding="5"/>
             <PasswordBox x:Name="pbPass" Visibility="Hidden" materialDesign:HintAssist.Hint="Пароль" Width="200" Background="White" Foreground="Black" Margin="0,0,0,10" Padding="5"/>
             <PasswordBox x:Name="pbPassConfirm" Visibility="Hidden" materialDesign:HintAssist.Hint="Повтор пароля" Width="200" Background="White" Foreground="Black" Margin="0,0,0,40" Padding="5"/>
-            <Button x:Name="btRestore" Width="165" Content="Восстановить" Background="Purple" Foreground="Black" PreviewMouseLeftButtonDown="btRestore_PreviewMouseLeftButtonDown"/>
+            <Button x:Name="btRestore" Width="165" Content="Восстановить" Background="Purple" Foreground="Black" Click="btRestore_Click"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <ui:Link Content="Передумали?"/>
+                <ui:Link x:Name="liBack" Content="Передумали?" PreviewMouseLeftButtonDown="liBack_PreviewMouseLeftButtonDown"/>
             </StackPanel>
         </StackPanel>
     </Grid>

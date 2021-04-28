@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using SharedLibrary;
+
+namespace Client.UI.UserControls
+{
+    /// <summary>
+    /// Логика взаимодействия для Chat.xaml
+    /// </summary>
+    public partial class Chat : UserControl
+    {
+
+        public Chat()
+        {
+            InitializeComponent();
+        }
+
+        public Chat(Dialog dialog) : this()
+        {
+            foreach (SharedLibrary.Message message in dialog.Messages) 
+            {
+                Message _message = new Message(message.MessageText);
+                spMessages.Children.Add(_message);
+            }
+        }
+    }
+}

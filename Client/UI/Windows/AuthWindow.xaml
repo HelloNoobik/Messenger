@@ -20,11 +20,11 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <TextBox x:Name="tbLogin" materialDesign:HintAssist.Hint="Логин" Width="200" Background="White" Foreground="Black" Margin="10,10,10,10" Padding="5"/>
             <PasswordBox x:Name="pbPass" materialDesign:HintAssist.Hint="Пароль" Width="200" Background="White" Foreground="Black" Margin="0,0,0,40" Padding="5"/>
-            <Button x:Name="btAuth" Width="150" Content="Войти" Background="Purple" Foreground="Black"/>
+            <Button x:Name="btAuth" Width="150" Content="Войти" Background="Purple" Foreground="Black" Click="btAuth_Click"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <ui:Link Content="Нет аккаунта?"/>
-                <ui:Link Content="Забыли пароль?"/>
+                <ui:Link x:Name="liRegister" Content="Нет аккаунта?" PreviewMouseLeftButtonDown="liRegister_PreviewMouseLeftButtonDown"/>
+                <ui:Link x:Name="liRestore" Content="Забыли пароль?" PreviewMouseLeftButtonDown="liRestore_PreviewMouseLeftButtonDown"/>
             </StackPanel>
         </StackPanel>
     </Grid>

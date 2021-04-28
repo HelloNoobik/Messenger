@@ -22,10 +22,10 @@
             <TextBox x:Name="tbEmail" materialDesign:HintAssist.Hint="Почта" Width="200" Background="White" Foreground="Black" Margin="0,0,0,10" Padding="5"/>
             <PasswordBox x:Name="pbPass" materialDesign:HintAssist.Hint="Пароль" Width="200" Background="White" Foreground="Black" Margin="0,0,0,10" Padding="5"/>
             <PasswordBox x:Name="pbPassConfirm" materialDesign:HintAssist.Hint="Повтор пароля" Width="200" Background="White" Foreground="Black" Margin="0,0,0,40" Padding="5"/>
-            <Button x:Name="btRegister" Width="165" Content="Зарегистрироваться" Background="Purple" Foreground="Black"/>
+            <Button x:Name="btRegister" Width="165" Content="Зарегистрироваться" Background="Purple" Foreground="Black" Click="btRegister_Click"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <ui:Link Content="Передумали?"/>
+                <ui:Link x:Name="liBack" Content="Передумали?" PreviewMouseLeftButtonDown="liBack_PreviewMouseLeftButtonDown"/>
             </StackPanel>
         </StackPanel>
     </Grid>
